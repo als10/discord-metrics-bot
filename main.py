@@ -44,7 +44,7 @@ async def on_message(message):
             start_date = datetime.strptime(params[1], "%Y-%m-%d")
             end_date = start_date + timedelta(days=6)
         else:
-            message.channel.send("Usage `$metrics <limit> <start-date>`")
+            await message.channel.send("Usage `$metrics <limit> <start-date>`")
             return
 
         print("getting messages...")
@@ -68,7 +68,7 @@ async def on_message(message):
         data.to_csv(file_location)
         print(f"saved as csv to {file_location}")
 
-        message.channel.send(
+        await message.channel.send(
             calculate_metrics(
                 data,
                 start_date.strftime("%Y-%m-%d"), 
