@@ -9,7 +9,6 @@ load_dotenv()
 nest_asyncio.apply()
 
 client = discord.Client()
-file_dir = "data"
 channels = []
 
 
@@ -31,9 +30,6 @@ async def on_message(message):
 
     if message.content.startswith("$metrics"):
         params = message.content.split()[1:]
-
-        today = datetime.today().strftime("%Y-%m-%d")
-        file_location = f"{file_dir}/{today}.csv"
 
         if len(params) == 0:
             limit = 10000
@@ -65,8 +61,6 @@ async def on_message(message):
                 )
 
         print("got all messages")
-        data.to_csv(file_location)
-        print(f"saved as csv to {file_location}")
 
         await message.channel.send(
             calculate_metrics(
