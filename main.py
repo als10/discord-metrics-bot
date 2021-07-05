@@ -36,7 +36,7 @@ async def on_message(message):
             end_date = datetime.today()
             start_date = end_date - timedelta(days=6)
         elif len(params) == 2:
-            limit = params[0]
+            limit = int(params[0])
             start_date = datetime.strptime(params[1], "%Y-%m-%d")
             end_date = start_date + timedelta(days=6)
         else:
