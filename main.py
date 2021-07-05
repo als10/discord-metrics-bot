@@ -48,19 +48,21 @@ async def on_message(message):
         data = pd.DataFrame(columns=["date", "time", "author", "channel"])
         for channel in channels:
             channel_name = channel.name
-            print(channel_name)
-            async for msg in channel.history(limit=limit):
-                date = msg.created_at.strftime("%Y-%m-%d")
-                time = msg.created_at.strftime("%H:%M")
-                data = data.append(
-                    {
-                        "date": date,
-                        "time": time,
-                        "author": msg.author.name,
-                        "channel": channel_name,
-                    },
-                    ignore_index=True,
-                )
+            try:
+                async for msg in channel.history(limit=limit):
+                    date = msg.created_at.strftime("%Y-%m-%d")
+                    time = msg.created_at.strftime("%H:%M")
+                    data = data.append(
+                        {
+                            "date": date,
+                            "time": time,
+                            "author": msg.author.name,
+                            "channel": channel_name,
+                        },
+                        ignore_index=True,
+                    )
+            except Exception as e:
+                pass
 
         print("got all messages")
 
