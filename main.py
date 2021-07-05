@@ -66,7 +66,9 @@ async def on_message(message):
         print("got all messages")
 
         await message.channel.send(
-            embed=calculate_metrics(data, start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
+            embed=calculate_metrics(
+                data, start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
+            )
         )
 
 
@@ -105,13 +107,18 @@ def calculate_metrics(data, start_date, end_date):
 
 
 def send_metrics_message(metrics):
-    embed = discord.Embed(title=f"__**Server Metrics**__", color=0x03f8fc,timestamp=datetime.now())
+    embed = discord.Embed(
+        title=f"__**Server Metrics**__", color=0x03F8FC, timestamp=datetime.now()
+    )
     for group in metrics:
         embed.add_field(
-            name=f'**{group}**',
-            value='\n'.join(f"{m} {metrics[group][m]}" for m in sorted(metrics[group].keys())),
-            inline=False
+            name=f"**{group}**",
+            value="\n".join(
+                f"{m} {metrics[group][m]}" for m in sorted(metrics[group].keys())
+            ),
+            inline=False,
         )
     return embed
+
 
 client.run(os.getenv("TOKEN"))
