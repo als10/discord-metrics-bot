@@ -20,6 +20,7 @@ async def on_ready():
         for channel in server.channels:
             if str(channel.type) == "text":
                 channels.append(channel)
+                print(channel.name)
     print(f"got all {len(channels)} channels")
 
 
