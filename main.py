@@ -20,7 +20,6 @@ async def on_ready():
         for channel in server.channels:
             if str(channel.type) == "text":
                 channels.append(channel)
-                print(channel.name)
     print(f"got all {len(channels)} channels")
 
 
@@ -62,7 +61,7 @@ async def on_message(message):
                         ignore_index=True,
                     )
             except Exception as e:
-                pass
+                continue
 
         print("got all messages")
 
