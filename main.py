@@ -47,6 +47,7 @@ async def on_message(message):
         data = pd.DataFrame(columns=["date", "time", "author", "channel"])
         for channel in channels:
             channel_name = channel.name
+            print(channel_name)
             async for msg in channel.history(limit=limit):
                 date = msg.created_at.strftime("%Y-%m-%d")
                 time = msg.created_at.strftime("%H:%M")
