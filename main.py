@@ -110,7 +110,7 @@ def send_metrics_message(metrics):
         embed.add_field(
             name=f'**{group}**',
             value='\n'.join(f"{m} {metrics[group][m]}" for m in sorted(metrics[group].keys())),
-            inline=True
+            inline=False
         )
     return embed
 
