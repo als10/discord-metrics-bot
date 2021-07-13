@@ -1,6 +1,5 @@
 import discord
 import os
-from discord.message import DeletedReferencedMessage
 from dotenv import load_dotenv
 import pandas as pd
 import nest_asyncio
