@@ -4,20 +4,12 @@ from dotenv import load_dotenv
 import pandas as pd
 import nest_asyncio
 from datetime import datetime, timedelta
-import psycopg2
 
 load_dotenv()
 nest_asyncio.apply()
 
 client = discord.Client()
-DATABASE_URL = os.getenv("DATABASE_URL")
 channels = []
-
-conn = psycopg2.connect(DATABASE_URL)
-cursor = conn.cursor()
-
-print("Database ready")
-
 
 @client.event
 async def on_ready():
@@ -45,47 +37,27 @@ async def on_message(message):
         else:
             start_date = datetime.strptime(params[0], "%Y-%m-%d")
             end_date = start_date + timedelta(days=6)
-            if len(params) == 2:
-                mode = int(params[1])
-            else:
-                await message.channel.send("Usage `$metrics <start-date> <mode>`")
-                return
         
         print("getting messages...")
         data = pd.DataFrame(columns=["date", "time", "author", "channel"])
-        
-        if mode == 1:
-            cursor.execute('SELECT MessageDate, MessageTime, Author, Channel FROM Metrics')
-            results = cursor.fetchall()
 
-            for row in results:
-                data = data.append(
-                    {
-                        "date": row[0],
-                        "time": row[1],
-                        "author": row[2],
-                        "channel": row[3],
-                    },
-                    ignore_index=True,
-                )
-        elif mode == 2:
-            for channel in channels:
-                channel_name = channel.name
-                try:
-                    async for msg in channel.history(limit=100000):
-                        date = msg.created_at.strftime("%Y-%m-%d")
-                        time = msg.created_at.strftime("%H:%M")
-                        data = data.append(
-                            {
-                                "date": date,
-                                "time": time,
-                                "author": msg.author.name,
-                                "channel": channel_name,
-                            },
-                            ignore_index=True,
-                        )
-                except Exception as e:
-                    continue
+        for channel in channels:
+            channel_name = channel.name
+            try:
+                async for msg in channel.history(limit=100000):
+                    date = msg.created_at.strftime("%Y-%m-%d")
+                    time = msg.created_at.strftime("%H:%M")
+                    data = data.append(
+                        {
+                            "date": date,
+                            "time": time,
+                            "author": msg.author.name,
+                            "channel": channel_name,
+                        },
+                        ignore_index=True,
+                    )
+            except Exception as e:
+                continue
 
         print("got all messages")
 
@@ -94,20 +66,6 @@ async def on_message(message):
                 data, start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")
             )
         )
-    else:
-        cursor.execute(
-            """
-            INSERT INTO Metrics (Author, MessageDate, MessageTime, Channel)
-                VALUES (%s, %s, %s, %s)
-            """,
-            (
-                message.author.name,
-                message.created_at.strftime("%Y-%m-%d"),
-                message.created_at.strftime("%H:%M"),
-                message.channel.name,
-            ),
-        )
-        conn.commit()
 
 
 def calculate_metrics(data, start_date, end_date):
